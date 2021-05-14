@@ -1,0 +1,47 @@
+> ### 思路
+> * s = "3[a]2[bc]", 返回 "aaabcbc".
+> * s = "3[a2[c]]", 返回 "accaccacc".
+> * s = "2[abc]3[cd]ef", 返回 "abcabccdcdcdef".
+> 
+> 在上面的例子中，第二个示例出现了括号内嵌的情况。本题中，比较难处理的也是这部分。
+> 
+> 在本篇幅中，我们使用栈的思路，来解决本题。上面提及出现的括号内嵌的情况，当我们返回的时候，要从内部往外去生成与拼接字符，这也是我们使用栈的原因，因为栈具有先入后出的特性。
+> 
+> 在这里，我们栈里面，每项需要存储两个信息，一个是左括号前面的字符，一个是左括号前面的数字。
+> 
+> 具体的做法：
+> 
+ * 遍历元素为数字时，将数字字符转换为数字，这里用于后面字符解码倍数运算；
+ * 遍历元素为字母时，这个时候，直接将字符加在结果尾部；
+ * 遍历元素为左括号时，要将左括号前面的字母和数字进行入栈，入栈之后，要将存储这两项的变量重置；
+ * 遍历元素为右括号时，进行出栈，拼接字符。
+ 
+ ### 代码
+ ```
+ python
+ class Solution:
+     def decodeString(self, s: str) -> str:
+         stack = []
+         num = 0
+         letter = ''
+ 
+         for char in s:
+             if char.isdigit():
+                 num = num*10 + int(char)
+             elif char == '[' :
+                 stack.append((letter,num))
+                 num = 0
+                 letter = ''
+             elif char == ']':
+                 letter_stack,num_stack = stack.pop()
+                 letter = letter_stack + num_stack * letter
+             else:
+                 letter = letter + char
+         return letter
+ ```
+ 
+ **复杂度分析**
+ 
+ * 时间复杂度：O(N)
+ * 空间复杂度：O(N)
+
